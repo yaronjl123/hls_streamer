@@ -1,3 +1,6 @@
+![diagram](/docs/diagram.png)
+
+
 ###Local video conversion sequence diagram
                     
 ```mermaid
@@ -20,14 +23,16 @@ Queue->> Converter: convert chunk 0 message
 HDFS->> Converter: load chunk 0
 Converter->> HDFS: save converted chunk 0
 UI->>Streamer: playlist request
+HDFS->> Streamer: converted chunks list [0]
 Streamer->> UI: updated playlist  [0]
-UI->> Streamer: converted chunk 0 request
-HDFS->> Streamer: converted chunk 0
-Streamer->> UI: converted chunk 0
 Queue->> Converter: convert chunk 1 message
 HDFS->> Converter: load chunk 1
 Converter->> HDFS: save converted chunk 1
+UI->> Streamer: converted chunk 0 request
+HDFS->> Streamer: converted chunk 0
+Streamer->> UI: converted chunk 0
 UI->> Streamer: playlist request
+HDFS->> Streamer: converted chunks list [0,1]
 Streamer->> UI: updated playlist [0,1]
 UI->> Streamer: converted chunk 1 request
 HDFS->> Streamer: converted chunk 1
