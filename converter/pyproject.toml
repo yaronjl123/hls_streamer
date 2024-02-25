@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "converter"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+hdfs = "2.7.3"
+pika = "1.3.2"
+fastapi = "0.109.2"
+uvicorn = "0.27.0.post1"
+jinja2 = "3.1.3"
+aio-pika = "9.4.0"
+dependency-injector = "4.40.0"
+PyYAML = "6.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

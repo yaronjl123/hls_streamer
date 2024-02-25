@@ -1,0 +1,60 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: jobs-role
+  namespace: default
+rules:
+  - apiGroups:
+        - ""
+        - batch
+    resources:
+      - jobs
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: streamer
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: streamer-jobs
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: jobs-role
+subjects:
+- kind: ServiceAccount
+  name: streamer
+  namespace: default
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: streamer
+spec:
+  serviceAccountName: streamer
+  containers:
+  - name: streamer
+    image: streamer
+    imagePullPolicy: Never
+    ports:
+    - containerPort: 5000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamer
+  labels:
+    run: streamer
+spec:
+  ports:
+    - port: 5000
+      protocol: TCP
+  selector:
+    run: streamer

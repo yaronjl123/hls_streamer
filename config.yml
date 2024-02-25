@@ -1,0 +1,5 @@
+rabbit:
+  connection_url: "amqp://streamer:streamer@rabbitmq:5672/"
+
+hdfs:
+  connection_url: "http://host.docker.internal:50070"

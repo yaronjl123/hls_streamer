@@ -1,0 +1,19 @@
+services:
+  hadoop:
+    image: harisekhon/hadoop
+    hostname: host.docker.internal
+    ports:
+      - "8088:8088"
+      - "8020:8020"
+      - "50075:50075"
+      - "50070:50070"
+    volumes:
+      - hdfs:/home/hadoop/data/dataNode
+      - namenode:/tmp/hadoop-root/dfs/name
+      - ./devops/hadoop/hdfs_config:/hadoop/etc/hadoop/hdfs-site.xml
+
+volumes:
+  hdfs:
+    external: true
+  namenode:
+    external: true

@@ -1,0 +1,60 @@
+<html>
+  <head>
+    <title>Video Transformer</title>
+  </head>
+
+  <body>
+    <script src="//cdn.jsdelivr.net/npm/hls.js@0.14.2/dist/hls.min.js"></script>
+
+    <center>
+      <h1>Video Transformer</h1>
+      <video height="600" id="video" controls muted></video>
+    </center>
+
+    <script>
+        const sleepNow = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
+
+        async function try_playlist(url) {
+          var xhr = new XMLHttpRequest();
+          xhr.onload = async function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                // Runs when the request is successful
+                var response = xhr.responseText
+                var video = document.getElementById('video');
+                var hls = new Hls({"debug": true});
+                hls.loadSource(url);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED,function() {
+                  video.play();
+                });
+            } else {
+                 await sleepNow(2000)
+
+              return try_playlist(url);
+            }
+          }
+
+          xhr.open('GET', url);
+          xhr.send();
+        }
+
+
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                var response = xhr.responseText
+                try_playlist("http://localhost:5000/video/stream/" + response + "/" + response + ".m3u8");
+            } else {
+                // Runs when it's not
+                console.log(xhr.responseText);
+            }
+
+        };
+
+        xhr.open('GET', 'http://localhost:5000/video/local/BBB?filter=blah');
+        xhr.send();
+    </script>
+  </body>
+</html>
