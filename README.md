@@ -1,7 +1,10 @@
+# HLS Streamer
+live conversion of an existing video or live stream
+
 ![diagram](/docs/diagram.png)
 
 
-###Local video conversion sequence diagram
+## Local video conversion
                     
 ```mermaid
 sequenceDiagram
@@ -38,5 +41,3 @@ UI->> Streamer: converted chunk 1 request
 HDFS->> Streamer: converted chunk 1
 Streamer->> UI: chunk 1
 ```
-
-###End
