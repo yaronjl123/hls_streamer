@@ -39,9 +39,7 @@ def generate_live_playlist_from_available_chunks(video_id, video_chunks):
 @inject
 async def publish_ffmpeg_tasks(source_video_id, new_video_id, hdfs_client: HDFSClient = Provide[DependenciesContainer.hdfs_client]):
     rabbit_client = RabbitClient("ffmpeg", {"x-max-priority": 4})
-    print("Z"*10, rabbit_client)
     source_video_chunks: List[VideoChunk] = hdfs_client.get_video_chunks(source_video_id)
-    print("Z", len(source_video_chunks))
     for source_video_chunk in source_video_chunks:
         new_video_chunk = VideoChunk(video_id=new_video_id, sequence_number=source_video_chunk.sequence_number)
         await publish_ffmpeg_task(source_video_chunk, new_video_chunk, rabbit_client)

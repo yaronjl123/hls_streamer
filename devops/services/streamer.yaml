@@ -32,18 +32,26 @@ subjects:
   namespace: default
 
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: streamer
 spec:
-  serviceAccountName: streamer
-  containers:
-  - name: streamer
-    image: streamer
-    imagePullPolicy: Never
-    ports:
-    - containerPort: 5000
+  selector:
+    matchLabels:
+      run: streamer
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: streamer
+    spec:
+      containers:
+        - name: streamer
+          image: streamer
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5000
 
 ---
 apiVersion: v1

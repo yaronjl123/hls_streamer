@@ -1,10 +1,10 @@
 import uuid
 from kubernetes import client, config
+from kubernetes.client import V1EnvVar
 
 
 class JobExecutor:
     def __init__(self):
-        # config.load_kube_config()
         config.load_incluster_config()
 
     def create_job(self, name, image, command, args):
@@ -12,14 +12,14 @@ class JobExecutor:
         pod_id = job_id
 
         metadata = client.V1ObjectMeta(name=name, labels={"job_name": job_id})
-        print("T"*10, args)
-
+        env = [V1EnvVar(name="PYTHONPATH", value=".")]
         container = client.V1Container(
             image=image,
             name=name,
             image_pull_policy='Never',
             args=[*args],
             command=[*command],
+            env=env
         )
 
         pod_name = "job_" + pod_id
