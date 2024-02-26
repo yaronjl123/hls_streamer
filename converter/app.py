@@ -1,4 +1,3 @@
-from concurrent.futures import ProcessPoolExecutor
 from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import FastAPI
@@ -14,8 +13,7 @@ async def lifespan(app: FastAPI):
     container.config.from_yaml("./config.yml")
     # container.config.from_yaml("../debug.yml")
 
-    pool = ProcessPoolExecutor(max_workers=4)
-    ffmpeg_message_listener = RabbitListener("ffmpeg", {"x-max-priority": 4}, FFMPEGMessageHandler(executor_pool=pool))
+    ffmpeg_message_listener = RabbitListener("ffmpeg", {"x-max-priority": 4}, FFMPEGMessageHandler())
     ffmpeg_message_listener.start()
 
     yield

@@ -23,13 +23,7 @@ class RabbitClient(QueueClient):
 
     async def get(self) -> IncomingMessage:
         queue = await self._get_queue()
-        message = None
-        try:
-            message = await queue.get()
-        except Exception as e:
-            print("got exception: ", e)
-
-        return message
+        return await queue.get(fail=False)
 
     async def publish(self, message: BaseModel, priority=0, routing_key=None):
         routing_key = routing_key or self._queue_name

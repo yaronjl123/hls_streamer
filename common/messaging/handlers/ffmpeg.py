@@ -13,8 +13,7 @@ from common.dependencies import DependenciesContainer
 
 
 class FFMPEGMessageHandler(BaseMessageHandler):
-    def __init__(self, executor_pool, hdfs_client: HDFSClient = Provide[DependenciesContainer.hdfs_client]):
-        self._executor_pool = executor_pool
+    def __init__(self, hdfs_client: HDFSClient = Provide[DependenciesContainer.hdfs_client]):
         self._hdfs_client = hdfs_client
         super().__init__()
 
@@ -26,14 +25,12 @@ class FFMPEGMessageHandler(BaseMessageHandler):
             self._hdfs_client.save_video_chunk(ffmpeg_message.new_video_chunk, output_filename)
         print("finished: ", ffmpeg_message.new_video_chunk.sequence_number)
 
-    async def _run_ffmpeg(self, input_filename,):
+    async def _run_ffmpeg(self, input_filename):
         output_filename = input_filename + "_output.ts"
         args = ["ffmpeg", "-i", input_filename, "-copyts", "-vf", "vflip", "-c:a", "copy", "-codec:v", "libx264", output_filename]
         loop = asyncio.get_running_loop()
-        #TODO - just asyncio.run_in_thread since it starts a process in it anyway???
-        ffmpeg_future = loop.run_in_executor(self._executor_pool, functools.partial(subprocess.call, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT), args)
+        await loop.run_in_executor(None, functools.partial(subprocess.call, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT), args)
         print("running ffmpeg task in executor .....")
-        await asyncio.wait([ffmpeg_future], timeout=5)
         return output_filename
 
     def _extract_video_chunks_from_queue_message(self, message):

@@ -46,6 +46,7 @@ spec:
       labels:
         run: streamer
     spec:
+      serviceAccountName: streamer
       containers:
         - name: streamer
           image: streamer
