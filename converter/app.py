@@ -1,3 +1,4 @@
+import asyncio
 from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import FastAPI
@@ -14,9 +15,11 @@ async def lifespan(app: FastAPI):
     # container.config.from_yaml("../debug.yml")
 
     ffmpeg_message_listener = RabbitListener("ffmpeg", {"x-max-priority": 4}, FFMPEGMessageHandler())
-    ffmpeg_message_listener.start()
+    asyncio.create_task(ffmpeg_message_listener.start())
 
     yield
+
+    ffmpeg_message_listener.stop()
 
 
 app = FastAPI(lifespan=lifespan)

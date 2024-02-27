@@ -7,7 +7,7 @@ from aio_pika.abc import AbstractIncomingMessage
 from dependency_injector.wiring import Provide
 
 from common.hdfs.client import HDFSClient
-from common.messaging.messages.ffmpeg import VideoChunk, FFMPEGMessage
+from common.messaging.messages.ffmpeg import FFMPEGMessage
 from common.messaging.handlers.base import BaseMessageHandler
 from common.dependencies import DependenciesContainer
 
@@ -32,11 +32,6 @@ class FFMPEGMessageHandler(BaseMessageHandler):
         await loop.run_in_executor(None, functools.partial(subprocess.call, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT), args)
         print("running ffmpeg task in executor .....")
         return output_filename
-
-    def _extract_video_chunks_from_queue_message(self, message):
-        source_video_chunk = VideoChunk.from_json(message['source_chunk'])
-        new_video_chunk = VideoChunk.from_json(message['new_chunk'])
-        return source_video_chunk, new_video_chunk
 
     def _unwrap_message(self, message: AbstractIncomingMessage):
         message_json = message.body.decode()
